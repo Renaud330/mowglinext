@@ -1,6 +1,12 @@
 cmake_minimum_required(VERSION 3.8)
 project(mowgli_coverage)
 
+# Force classic DT_RPATH (not DT_RUNPATH) so this binary's Fields2Cover v3
+# resolution can't be overridden by LD_LIBRARY_PATH (which ROS's setup.bash
+# populates with /opt/ros/kilted/lib, containing the wrong F2C 2.0.0 SONAME).
+# DT_RPATH takes precedence over LD_LIBRARY_PATH; DT_RUNPATH does not.
+add_link_options(-Wl,--disable-new-dtags)
+
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
@@ -79,7 +85,8 @@ target_link_libraries(${PROJECT_NAME}_core Fields2Cover::Fields2Cover)
 # dependencies of the binary being loaded, so spell out the v3 lib dir to keep
 # the loader v3-aware when resolving Fields2Cover.
 set_target_properties(${PROJECT_NAME}_core PROPERTIES
-  INSTALL_RPATH "/opt/fields2cover-300/lib"
+  INSTALL_RPATH "/opt/fields2cover-300/lib:/opt/ros/kilted/lib:/opt/ros/kilted/lib/x86_64-linux-gnu:/opt/ros/kilted/opt/ortools_vendor/lib:${CMAKE_INSTALL_PREFIX}/../mowgli_interfaces/lib"
+  INSTALL_RPATH_USE_LINK_PATH FALSE
 )
 
 add_executable(${PROJECT_NAME}
@@ -94,7 +101,8 @@ ament_target_dependencies(${PROJECT_NAME} rclcpp)
 # both out here. The first $ORIGIN/.. hop is from
 # install/mowgli_coverage/lib/mowgli_coverage/ → install/mowgli_coverage/lib/.
 set_target_properties(${PROJECT_NAME} PROPERTIES
-  INSTALL_RPATH "$ORIGIN/..:/opt/fields2cover-300/lib"
+  INSTALL_RPATH "$ORIGIN/..:/opt/fields2cover-300/lib:/opt/ros/kilted/lib:/opt/ros/kilted/lib/x86_64-linux-gnu:/opt/ros/kilted/opt/ortools_vendor/lib"
+  INSTALL_RPATH_USE_LINK_PATH FALSE
 )
 
 install(
