@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.10)
 project(mowgli_coverage)
 
 # Force classic DT_RPATH (not DT_RUNPATH) so this binary's Fields2Cover v3
