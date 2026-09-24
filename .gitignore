@@ -73,4 +73,5 @@ ros2/log/
 
 install/
 source_env.sh
+ros2/src/webots_ros2/
 
