@@ -201,6 +201,10 @@ FusionGraphNode::~FusionGraphNode()
 
 int main(int argc, char** argv)
 {
+ /*   volatile int debug_wait = 1;
+while (debug_wait) {
+    rclcpp::sleep_for(std::chrono::milliseconds(100));
+}*/
   rclcpp::init(argc, argv);
   auto node = std::make_shared<fusion_graph::FusionGraphNode>();
   rclcpp::spin(node);

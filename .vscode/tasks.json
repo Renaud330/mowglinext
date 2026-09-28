@@ -1,0 +1,88 @@
+{
+  // À placer dans /home/oldtour/mowglinext/.vscode/tasks.json
+  // Le workspace colcon est ros2/ (build/ et install/ sont dans ros2/)
+  "version": "2.0.0",
+  "options": {
+    "cwd": "${workspaceFolder}/ros2"
+  },
+  "inputs": [
+    {
+      "id": "package",
+      "type": "promptString",
+      "description": "Paquet(s) ROS2 à compiler en Debug (séparés par des espaces)", "default": "fusion_graph"
+    }
+  ],
+  "tasks": [
+    {
+      // Build complet optimisé, sans les paquets GPS. À lancer via Terminal > Run Task… (plus le défaut)
+      "label": "MowgliNext: build COMPLET RelWithDebInfo (sans GPS)",
+      "type": "process",
+      "command": "bash",
+      "args": [
+        "-lc",
+        "unset AMENT_PREFIX_PATH CMAKE_PREFIX_PATH COLCON_PREFIX_PATH; source /opt/ros/lyrical/setup.bash; [ -f ../source_env.sh ] && source ../source_env.sh; export CMAKE_PREFIX_PATH=/opt/gtsam:/opt/fields2cover-300:/opt/lyrical_vendor:$CMAKE_PREFIX_PATH; export LD_LIBRARY_PATH=/opt/gtsam/lib:/opt/fields2cover-300/lib:$LD_LIBRARY_PATH; export MAKEFLAGS=-j1 CMAKE_BUILD_PARALLEL_LEVEL=1; colcon build --executor sequential --parallel-workers 1 --symlink-install --event-handlers console_direct+ --packages-skip mowgli_gnss_bridge --cmake-args -DGTSAM_DIR=/opt/gtsam/lib/cmake/GTSAM -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
+      ],
+      "group": "build",
+      "problemMatcher": {
+        "base": "$gcc",
+        "fileLocation": ["relative", "${workspaceFolder}/ros2"]
+      }
+    },
+    {
+      // Pour le pas à pas : -O0 -g3
+      "label": "MowgliNext: build DEBUG d'un paquet (-O0)",
+      "type": "process",
+      "command": "bash",
+      "args": [
+        "-lc",
+        "unset AMENT_PREFIX_PATH CMAKE_PREFIX_PATH COLCON_PREFIX_PATH; source /opt/ros/lyrical/setup.bash; [ -f ../source_env.sh ] && source ../source_env.sh; export CMAKE_PREFIX_PATH=/opt/gtsam:/opt/fields2cover-300:/opt/lyrical_vendor:$CMAKE_PREFIX_PATH; export LD_LIBRARY_PATH=/opt/gtsam/lib:/opt/fields2cover-300/lib:$LD_LIBRARY_PATH; export MAKEFLAGS=-j1 CMAKE_BUILD_PARALLEL_LEVEL=1; colcon build --executor sequential --parallel-workers 1 --symlink-install --event-handlers console_direct+ --packages-select ${input:package} --cmake-args -DGTSAM_DIR=/opt/gtsam/lib/cmake/GTSAM -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS_DEBUG='-O0 -g3' -DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
+      ],
+      "group": "build",
+      "problemMatcher": {
+        "base": "$gcc",
+        "fileLocation": ["relative", "${workspaceFolder}/ros2"]
+      }
+    },
+    {
+      // Debug (-O0) de tous les paquets mowgli_* + fusion_graph, sans le GPS (pour des points d'arrêt partout)
+      "label": "MowgliNext: build DEBUG de tous les paquets mowgli (sans GPS)",
+      "type": "process",
+      "command": "bash",
+      "args": [
+        "-lc",
+        "unset AMENT_PREFIX_PATH CMAKE_PREFIX_PATH COLCON_PREFIX_PATH; source /opt/ros/lyrical/setup.bash; [ -f ../source_env.sh ] && source ../source_env.sh; export CMAKE_PREFIX_PATH=/opt/gtsam:/opt/fields2cover-300:/opt/lyrical_vendor:$CMAKE_PREFIX_PATH; export LD_LIBRARY_PATH=/opt/gtsam/lib:/opt/fields2cover-300/lib:$LD_LIBRARY_PATH; export MAKEFLAGS=-j1 CMAKE_BUILD_PARALLEL_LEVEL=1; colcon build --executor sequential --parallel-workers 1 --symlink-install --event-handlers console_direct+ --packages-select-regex '^(mowgli_.*|fusion_graph)$' --packages-skip mowgli_gnss_bridge --cmake-args -DGTSAM_DIR=/opt/gtsam/lib/cmake/GTSAM -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS_DEBUG='-O0 -g3' -DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
+      ],
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": {
+        "base": "$gcc",
+        "fileLocation": ["relative", "${workspaceFolder}/ros2"]
+      }
+    },
+    {
+      // Purge d'un seul paquet (à faire après un changement de GTSAM_DIR)
+      "label": "MowgliNext: purger un paquet",
+      "type": "shell",
+      "command": "rm -rf build/${input:package} install/${input:package}",
+      "problemMatcher": []
+    },
+    {
+      "label": "MowgliNext: clean complet (ros2/)",
+      "type": "shell",
+      "command": "rm -rf build install log",
+      "problemMatcher": []
+    },
+    {
+      // Ajouter ici les arguments du launch (voir: ros2 launch mowgli_bringup sim_full_system.launch.py --show-args)
+      "label": "MowgliNext: lancer la simulation (sans GPS)",
+      "type": "process",
+      "command": "bash",
+      "args": [
+        "-lc",
+        "unset AMENT_PREFIX_PATH CMAKE_PREFIX_PATH COLCON_PREFIX_PATH; source /opt/ros/lyrical/setup.bash; [ -f ../source_env.sh ] && source ../source_env.sh; source install/setup.bash; export LD_LIBRARY_PATH=/opt/gtsam/lib:/opt/fields2cover-300/lib:$LD_LIBRARY_PATH; ros2 launch mowgli_bringup sim_full_system.launch.py"
+      ],
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": { "panel": "dedicated" }
+    }
+  ]
+}

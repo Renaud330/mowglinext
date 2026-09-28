@@ -300,6 +300,8 @@ bool GraphManager::Load(const std::string& prefix)
   // reject a map whose datum differs — its keyframe absolute poses (and graph)
   // belong to a different site and would inject wrong absolute factors. Skipped
   // when the configured datum is unset (0,0) so self-seeded bootstrap reloads.
+  // site and would inject wrong absolute factors. Skipped when the configured datum
+  // is unset (0,0) so self-seeded bootstrap reloads.
   const bool have_cfg_datum =
       std::abs(params_.datum_lat) > 1.0e-9 || std::abs(params_.datum_lon) > 1.0e-9;
   const bool have_persisted_datum =
@@ -317,7 +319,47 @@ bool GraphManager::Load(const std::string& prefix)
             loaded_datum_lon);
     return false;
   }
+// 1. Détection des Datums disponibles
+  const bool have_cfg_datum =
+      std::abs(params_.datum_lat) > 1.0e-9 || std::abs(params_.datum_lon) > 1.0e-9;
+  const bool have_persisted_datum =
+      std::abs(loaded_datum_lat) > 1.0e-9 || std::abs(loaded_datum_lon) > 1.0e-9;
 
+  // CAS A : Le fichier .meta n'a PAS de Datum, mais le YAML en a un
+  if (!have_persisted_datum && have_cfg_datum)
+  {
+    fprintf(stderr,
+            "fusion_graph::Load: WARNING - No persisted datum in .meta, "
+            "adopting configured datum (%.7f, %.7f)\n",
+            params_.datum_lat,
+            params_.datum_lon);
+    
+    // On affecte le Datum configuré au Datum chargé pour cette session
+    loaded_datum_lat = params_.datum_lat;
+    loaded_datum_lon = params_.datum_lon;
+  }
+  // CAS B : Aucun Datum n'est configuré NULLE PART (Ni .meta, ni YAML)
+  else if (!have_persisted_datum && !have_cfg_datum)
+  {
+    fprintf(stderr,
+            "fusion_graph::Load: FATAL ERROR - No Datum defined anywhere! "
+            "Aborting to prevent map corruption at (0,0).\n");
+    return false; // Ou std::exit(EXIT_FAILURE); pour faire crasher le nœud immédiatement
+  }
+  // CAS C : Les deux existent mais sont différents (protection inter-jardins)
+  else if (have_cfg_datum && have_persisted_datum &&
+          (std::abs(loaded_datum_lat - params_.datum_lat) > 1.0e-6 ||
+           std::abs(loaded_datum_lon - params_.datum_lon) > 1.0e-6))
+  {
+    fprintf(stderr,
+            "fusion_graph::Load: datum mismatch (persisted map cfg=%.9f,%.9f vs "
+            "loaded=%.9f,%.9f) — rejecting cross-garden map\n",
+            params_.datum_lat,
+            params_.datum_lon,
+            loaded_datum_lat,
+            loaded_datum_lon);
+    return false;
+  }
   // Refuse to restore a degenerate persisted state. With next_idx == 0
   // (or no values at all) marking initialized_ would let CreateNodeLocked
   // form PoseKey(next_idx - 1) and underflow into a 2^64-1 Symbol index

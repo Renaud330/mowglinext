@@ -1,0 +1,7 @@
+oldtour@Renaud:~/mowglinext/ros2$ reboot
+Operation inhibited by "oldtour" (PID 3684 "gnome-session-s", user oldtour), reason is "user session inhibited".
+Please retry operation after closing inhibitors and logging out other users.
+'systemd-inhibit' can be used to list active inhibitors.
+Alternatively, ignore inhibitors and users with 'systemctl reboot -i'.
+oldtour@Renaud:~/mowglinext/ros2$ 
+

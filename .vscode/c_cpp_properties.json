@@ -1,0 +1,54 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${workspaceFolder}/.vscode/browse.vc.db",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/oldtour/mowglinext/install/webots_ros2_control/include/**",
+        "/home/oldtour/mowglinext/install/webots_ros2_driver/include/**",
+        "/home/oldtour/mowglinext/install/webots_ros2_msgs/include/**",
+        "/home/oldtour/mowglinext/install/opennav_coverage_msgs/include/**",
+        "/home/oldtour/mowglinext/install/mowgli_interfaces/include/**",
+        "/home/oldtour/mowglinext/ros2/install/webots_ros2_control/include/**",
+        "/home/oldtour/mowglinext/ros2/install/webots_ros2_driver/include/**",
+        "/home/oldtour/mowglinext/ros2/install/webots_ros2_msgs/include/**",
+        "/home/oldtour/mowglinext/ros2/install/opennav_coverage_msgs/include/**",
+        "/home/oldtour/mowglinext/ros2/install/mowgli_nav2_plugins/include/**",
+        "/home/oldtour/mowglinext/ros2/install/mowgli_monitoring/include/**",
+        "/home/oldtour/mowglinext/ros2/install/mowgli_map/include/**",
+        "/home/oldtour/mowglinext/ros2/install/mowgli_localization/include/**",
+        "/home/oldtour/mowglinext/ros2/install/mowgli_leds/include/**",
+        "/home/oldtour/mowglinext/ros2/install/mowgli_hardware/include/**",
+        "/home/oldtour/mowglinext/ros2/install/mowgli_coverage/include/**",
+        "/home/oldtour/mowglinext/ros2/install/mowgli_behavior/include/**",
+        "/home/oldtour/mowglinext/ros2/install/fusion_graph/include/**",
+        "/home/oldtour/mowglinext/ros2/install/mowgli_interfaces/include/**",
+        "/opt/lyrical_vendor/include/**",
+        "/opt/ros/lyrical/include/**",
+        "/home/oldtour/mowglinext/ros2/src/fusion_graph/include/**",
+        "/home/oldtour/mowglinext/ros2/src/mowgli_behavior/include/**",
+        "/home/oldtour/mowglinext/ros2/src/mowgli_coverage/include/**",
+        "/home/oldtour/mowglinext/ros2/src/mowgli_hardware/include/**",
+        "/home/oldtour/mowglinext/ros2/src/mowgli_interfaces/include/**",
+        "/home/oldtour/mowglinext/ros2/src/mowgli_leds/include/**",
+        "/home/oldtour/mowglinext/ros2/src/mowgli_localization/include/**",
+        "/home/oldtour/mowglinext/ros2/src/mowgli_map/include/**",
+        "/home/oldtour/mowglinext/ros2/src/mowgli_monitoring/include/**",
+        "/home/oldtour/mowglinext/ros2/src/mowgli_nav2_plugins/include/**",
+        "/home/oldtour/mowglinext/ros2/src/mowgli_simulation/include/**",
+        "/home/oldtour/mowglinext/ros2/src/webots_ros2/webots_ros2_control/include/**",
+        "/home/oldtour/mowglinext/ros2/src/webots_ros2/webots_ros2_driver/include/**",
+        "/home/oldtour/mowglinext/sensors/gps/mowgli_gnss_bridge/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ros2",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++17"
+    }
+  ],
+  "version": 4
+}

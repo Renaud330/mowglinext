@@ -75,3 +75,6 @@ install/
 source_env.sh
 ros2/src/webots_ros2/
 
+install.old/
+build.old/
+

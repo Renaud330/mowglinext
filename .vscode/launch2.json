@@ -1,0 +1,55 @@
+{
+  // À placer dans /home/oldtour/mowglinext/.vscode/launch.json
+  // Nécessite l'extension "C/C++" (ms-vscode.cpptools)
+  "version": "0.2.0",
+  "configurations": [
+    {
+      // Lance le launch complet et attache gdb à chaque noeud C++ (extension "Robot Developer Extensions for ROS 2")
+      // Compiler d'abord en Debug les paquets voulus. Le tableau "launch" vient de l'exemple de la doc (voir remarque dans la réponse).
+      "name": "ROS2: Simulation complète (tous les noeuds)",
+      "type": "ros2",
+      "request": "launch",
+      "target": "${workspaceFolder}/.vscode/sim_debug.launch.py"
+    },
+    {
+      // Lance la simulation (tâche), puis choisis le process du noeud à déboguer
+      "name": "Attacher gdb à un noeud ROS2",
+      "type": "cppdbg",
+      "request": "attach",
+      "program": "${workspaceFolder}/ros2/install/${input:package}/lib/${input:package}/${input:executable}",
+      "processId": "${command:pickProcess}",
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "setupCommands": [
+        { "text": "-enable-pretty-printing", "ignoreFailures": true }
+      ],
+      "environment": [
+        { "name": "LD_LIBRARY_PATH", "value": "/opt/gtsam/lib:/opt/fields2cover-300/lib:/opt/lyrical_vendor/lib:${env:LD_LIBRARY_PATH}" }
+      ],
+      "sourceFileMap": { "/home/oldtour/mowglinext": "${workspaceFolder}" }
+    },
+    {
+      // Alternative : lance directement le noeud sous gdb (sans le reste de la sim)
+      "name": "Lancer un noeud sous gdb",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/ros2/install/${input:package}/lib/${input:package}/${input:executable}",
+      "args": ["--ros-args", "-p", "use_sim_time:=true"],
+      "cwd": "${workspaceFolder}/ros2",
+      "stopAtEntry": false,
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "setupCommands": [
+        { "text": "-enable-pretty-printing", "ignoreFailures": true }
+      ],
+      "environment": [
+        { "name": "LD_LIBRARY_PATH", "value": "/opt/gtsam/lib:/opt/fields2cover-300/lib:/opt/lyrical_vendor/lib:${env:LD_LIBRARY_PATH}" }
+      ],
+      "preLaunchTask": "MowgliNext: build DEBUG d'un paquet (-O0)"
+    }
+  ],
+  "inputs": [
+    { "id": "package", "type": "promptString", "description": "Paquet ROS2", "default": "fusion_graph" },
+    { "id": "executable", "type": "promptString", "description": "Exécutable du noeud", "default": "fusion_graph_node" }
+  ]
+}
