@@ -42,6 +42,7 @@ services:
     volumes:
       - ./config/cyclonedds.xml:/cyclonedds.xml:ro
       - mowgli_sim_maps:/ros2_ws/maps
+      - mowgli_sim_config:/ros2_ws/config
     restart: unless-stopped
     logging:
       driver: json-file
@@ -71,6 +72,7 @@ services:
     volumes:
       - ./config/cyclonedds.xml:/cyclonedds.xml:ro
       - mowgli_sim_maps:/ros2_ws/maps
+      - mowgli_sim_config:/ros2_ws/config
       # Live-edit config (no rebuild needed)
       - ../ros2/src/mowgli_bringup/config:/ros2_ws/install/mowgli_bringup/share/mowgli_bringup/config
       - ../ros2/src/mowgli_bringup/launch:/ros2_ws/install/mowgli_bringup/share/mowgli_bringup/launch
@@ -79,8 +81,8 @@ services:
       - ../ros2/src/mowgli_map/config:/ros2_ws/install/mowgli_map/share/mowgli_map/config
       - ../ros2/src/mowgli_localization/config:/ros2_ws/install/mowgli_localization/share/mowgli_localization/config
       - ../ros2/src/mowgli_simulation/launch:/ros2_ws/install/mowgli_simulation/share/mowgli_simulation/launch
-      - ../ros2/src/mowgli_simulation/worlds:/ros2_ws/install/mowgli_simulation/share/mowgli_simulation/worlds
-      - ../ros2/src/mowgli_simulation/config:/ros2_ws/install/mowgli_simulation/share/mowgli_simulation/config
+      # Webots assets (worlds_webots/, protos/, urdf_webots/, config_webots/)
+      # are deliberately NOT bind-mounted — editing them needs an image rebuild.
       # E2E test script
       - ../ros2/src/e2e_test.py:/ros2_ws/src/e2e_test.py
     restart: unless-stopped
@@ -114,6 +116,49 @@ services:
     volumes:
       - ./config/cyclonedds.xml:/cyclonedds.xml:ro
       - mowgli_sim_maps:/ros2_ws/maps
+      - mowgli_sim_config:/ros2_ws/config
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-file: "3"
+        max-size: 10m
+
+  # -------------------------------------------------------------------------
+  # Operator web GUI on :4006 — same image and the same foxglove_bridge
+  # contract as the robot, pointed at the simulator instead.
+  #
+  #   docker compose -f docker-compose.simulation.yaml up -d simulation-gui gui
+  #   http://localhost:4006
+  #
+  # FOXGLOVE_URL defaults to the compose-network name of `simulation-gui`.
+  # Against the host-network `simulation` service instead, override it:
+  #   SIM_FOXGLOVE_URL=ws://host.docker.internal:8765 docker compose … up -d gui
+  #
+  # /ros2_ws/config is shared with the simulator, so Settings writes the same
+  # sparse mowgli_robot.yaml the sim's launch files merge over the template
+  # (Invariant 15) — restart the sim service to apply.
+  #
+  # Not wired here (host-only on a real robot): the docker socket and /dev, so
+  # firmware flashing, rosbag and the GNSS tools stay unavailable. Teleop goes
+  # through foxglove_bridge — `cmd_vel_ws_relay` (:8766) is not launched by
+  # sim_full_system.launch.py, so the GUI uses its fallback publish path.
+  # -------------------------------------------------------------------------
+  gui:
+    container_name: mowgli_sim_web_gui
+    image: ${GUI_IMAGE:-ghcr.io/mowglinext/mowglinext/mowglinext-gui:main}
+    ports:
+      - "4006:4006"
+    environment:
+      FOXGLOVE_URL: ${SIM_FOXGLOVE_URL:-ws://simulation-gui:8765}
+      MOWER_YAML_CONFIG_FILE: /mowgli_config/mowgli_robot.yaml
+      DB_PATH: /db
+    volumes:
+      - mowgli_sim_gui_db:/db
+      - mowgli_sim_config:/mowgli_config
+      - mowgli_sim_maps:/ros2_ws/maps
+    depends_on:
+      - simulation-gui
     restart: unless-stopped
     logging:
       driver: json-file
@@ -123,3 +168,5 @@ services:
 
 volumes:
   mowgli_sim_maps:
+  mowgli_sim_config:
+  mowgli_sim_gui_db:

@@ -144,6 +144,38 @@ docker compose -f docker-compose.simulation.yaml logs -f dev-sim
 
 ## Accessing Simulation
 
+### Operator Web GUI (port 4006)
+
+The same web interface you use on the robot can be pointed at the simulator:
+
+```bash
+cd docker
+docker compose -f docker-compose.simulation.yaml up -d simulation-gui gui
+```
+
+Then open **http://localhost:4006** — dashboard, map, areas, mowing controls and
+settings all run against the simulated robot. The `gui` service pulls the
+published image (`GUI_IMAGE` overrides it) and talks to the simulator's
+`foxglove_bridge` exactly as it does on hardware.
+
+Against the host-network `simulation` service instead of `simulation-gui`,
+point the GUI at the host:
+
+```bash
+SIM_FOXGLOVE_URL=ws://host.docker.internal:8765 \
+  docker compose -f docker-compose.simulation.yaml up -d simulation gui
+```
+
+Differences from a real robot:
+
+- Settings writes go to a `mowgli_sim_config` volume mounted at `/ros2_ws/config`
+  in the simulator; restart the sim service to apply them.
+- Firmware flashing, rosbag and the GNSS tools are unavailable — they need the
+  host's docker socket and `/dev`, which the sim GUI service deliberately omits.
+- Manual mowing publishes through `foxglove_bridge`: `cmd_vel_ws_relay` (:8766)
+  is not launched by `sim_full_system.launch.py`, so the low-latency teleop lane
+  does not exist in simulation.
+
 ### GUI Access (noVNC)
 
 Open **http://localhost:6080/vnc.html** in your browser.
