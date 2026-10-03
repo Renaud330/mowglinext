@@ -22,12 +22,12 @@ namespace mowgli_coverage
 {
 
 CoverageServer::CoverageServer(const rclcpp::NodeOptions& options)
-    : nav2_util::LifecycleNode("coverage_server", "", options)
+    : nav2::LifecycleNode("coverage_server", "", options)
 {
   RCLCPP_INFO(get_logger(), "Creating %s", get_name());
 }
 
-nav2_util::CallbackReturn CoverageServer::on_configure(const rclcpp_lifecycle::State& /*state*/)
+nav2::CallbackReturn CoverageServer::on_configure(const rclcpp_lifecycle::State& /*state*/)
 {
   RCLCPP_INFO(get_logger(), "Configuring %s", get_name());
 
@@ -106,13 +106,22 @@ nav2_util::CallbackReturn CoverageServer::on_configure(const rclcpp_lifecycle::S
   rcl_action_server_options_t server_options = rcl_action_server_get_default_options();
   server_options.result_timeout.nanoseconds = RCL_S_TO_NS(action_server_result_timeout);
 
-  action_server_ = std::make_unique<ActionServer>(shared_from_this(),
+  /*action_server_ = std::make_unique<ActionServer>(shared_from_this(),
                                                   "plan_coverage",
                                                   std::bind(&CoverageServer::planCoverage, this),
                                                   nullptr,
                                                   std::chrono::milliseconds(500),
                                                   true,
-                                                  server_options);
+                                                  server_options);*/
+  action_server_ = std::make_unique<ActionServer>(
+    shared_from_this(),
+    "plan_coverage",
+    std::bind(&CoverageServer::planCoverage, this),
+    nullptr,  // goal_received_callback
+    nullptr,  // completion_callback
+    std::chrono::milliseconds(500),
+    true,     // spin_thread
+    false);   // realtime
 
   RCLCPP_INFO(get_logger(),
               "F2C v3 boustrophedon backend ready. robot_width=%.2fm "
@@ -121,36 +130,37 @@ nav2_util::CallbackReturn CoverageServer::on_configure(const rclcpp_lifecycle::S
               operation_width_,
               default_headland_width_,
               num_headland_passes_);
-  return nav2_util::CallbackReturn::SUCCESS;
+  return nav2::CallbackReturn::SUCCESS;
 }
 
-nav2_util::CallbackReturn CoverageServer::on_activate(const rclcpp_lifecycle::State& /*state*/)
+nav2::CallbackReturn CoverageServer::on_activate(const rclcpp_lifecycle::State& /*state*/)
 {
   RCLCPP_INFO(get_logger(), "Activating %s", get_name());
   action_server_->activate();
   createBond();
-  return nav2_util::CallbackReturn::SUCCESS;
+  return nav2::CallbackReturn::SUCCESS;
 }
 
-nav2_util::CallbackReturn CoverageServer::on_deactivate(const rclcpp_lifecycle::State& /*state*/)
+nav2
+::CallbackReturn CoverageServer::on_deactivate(const rclcpp_lifecycle::State& /*state*/)
 {
   RCLCPP_INFO(get_logger(), "Deactivating %s", get_name());
   action_server_->deactivate();
   destroyBond();
-  return nav2_util::CallbackReturn::SUCCESS;
+  return nav2::CallbackReturn::SUCCESS;
 }
 
-nav2_util::CallbackReturn CoverageServer::on_cleanup(const rclcpp_lifecycle::State& /*state*/)
+nav2::CallbackReturn CoverageServer::on_cleanup(const rclcpp_lifecycle::State& /*state*/)
 {
   RCLCPP_INFO(get_logger(), "Cleaning up %s", get_name());
   action_server_.reset();
-  return nav2_util::CallbackReturn::SUCCESS;
+  return nav2::CallbackReturn::SUCCESS;
 }
 
-nav2_util::CallbackReturn CoverageServer::on_shutdown(const rclcpp_lifecycle::State& /*state*/)
+nav2::CallbackReturn CoverageServer::on_shutdown(const rclcpp_lifecycle::State& /*state*/)
 {
   RCLCPP_INFO(get_logger(), "Shutting down %s", get_name());
-  return nav2_util::CallbackReturn::SUCCESS;
+  return nav2::CallbackReturn::SUCCESS;
 }
 
 namespace

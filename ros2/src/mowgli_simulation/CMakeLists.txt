@@ -12,6 +12,7 @@ find_package(ament_cmake REQUIRED)
 # `mowgli_simulation` Python package, which holds the kinematic
 # drivetrain plugin loaded by webots_ros2_driver.
 find_package(ament_cmake_python REQUIRED)
+find_package(ament_cmake_auto REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
@@ -32,7 +33,9 @@ target_include_directories(fake_hardware_bridge_node
     $<INSTALL_INTERFACE:include>
 )
 
-ament_target_dependencies(fake_hardware_bridge_node
+ament_auto_depend_on_packages(fake_hardware_bridge_node
+  SCOPE PRIVATE
+  PACKAGES
   rclcpp
   mowgli_interfaces
   nav_msgs
@@ -62,7 +65,9 @@ target_include_directories(sim_actuation_node
     $<INSTALL_INTERFACE:include>
 )
 
-ament_target_dependencies(sim_actuation_node
+ament_auto_depend_on_packages(sim_actuation_node
+  SCOPE PRIVATE
+  PACKAGES
   rclcpp
   geometry_msgs
 )

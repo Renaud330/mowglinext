@@ -16,6 +16,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(ament_cmake REQUIRED)
+find_package(ament_cmake_auto REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_action REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
@@ -25,7 +26,7 @@ find_package(nav_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(builtin_interfaces REQUIRED)
 find_package(mowgli_interfaces REQUIRED)
-
+find_package(nav2_ros_common REQUIRED) 
 # Fields2Cover v3 links ortools::ortools as a PUBLIC dependency, so it lands in
 # the exported target's INTERFACE_LINK_LIBRARIES — but v3's Fields2CoverConfig
 # .cmake does NOT find_dependency(ortools), so the consumer must define that
@@ -64,7 +65,8 @@ target_include_directories(${PROJECT_NAME}_core
     $<INSTALL_INTERFACE:include>
 )
 
-ament_target_dependencies(${PROJECT_NAME}_core
+#ament_target_dependencies(${PROJECT_NAME}_core
+ament_auto_depend_on_packages(${PROJECT_NAME}_core PACKAGES 
   rclcpp
   rclcpp_action
   rclcpp_lifecycle
@@ -93,8 +95,11 @@ add_executable(${PROJECT_NAME}
   src/main.cpp
 )
 target_link_libraries(${PROJECT_NAME} ${PROJECT_NAME}_core)
-ament_target_dependencies(${PROJECT_NAME} rclcpp)
-
+#ament_target_dependencies(${PROJECT_NAME} rclcpp)
+ament_auto_depend_on_packages(${PROJECT_NAME}
+  PACKAGES
+    rclcpp
+)
 # Make sure the executable can find libmowgli_coverage_core.so at the
 # install lib/ dir + libFields2Cover.so at /opt/fields2cover-300/lib.
 # CMake doesn't propagate RPATH from imported targets reliably, so spell

@@ -16,6 +16,7 @@
        Python package (kinematic drive plugin loaded by
        webots_ros2_driver). Phase 2.2 of the Webots migration. -->
   <buildtool_depend>ament_cmake_python</buildtool_depend>
+  <buildtool_depend>ament_cmake_auto</buildtool_depend>
 
   <!-- C++ node dependencies -->
   <depend>rclcpp</depend>

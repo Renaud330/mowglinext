@@ -24,7 +24,7 @@
 
 #include <nav2_core/controller_exceptions.hpp>
 #include <nav2_costmap_2d/costmap_2d.hpp>
-#include <nav2_util/node_utils.hpp>
+//#include <nav2_util/node_utils.hpp>
 #include <tf2/utils.hpp>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
 #include <tf2_ros/transform_listener.hpp>
@@ -38,9 +38,14 @@ namespace mowgli_nav2_plugins
 
 // ── Lifecycle ─────────────────────────────────────────────────────────────────
 
-void FTCController::configure(const rclcpp_lifecycle::LifecycleNode::WeakPtr& parent,
+/*void FTCController::configure(const rclcpp_lifecycle::LifecycleNode::WeakPtr& parent,
                               std::string name,
                               std::shared_ptr<tf2_ros::Buffer> tf,
+                              std::shared_ptr<nav2_costmap_2d::Costmap2DROS> costmap_ros)*/
+
+void FTCController::configure(const nav2::LifecycleNode::WeakPtr& parent,
+                              std::string name,
+                              nav2::TransformBuffer::SharedPtr tf,
                               std::shared_ptr<nav2_costmap_2d::Costmap2DROS> costmap_ros)
 {
   node_ = parent;
@@ -141,7 +146,7 @@ void FTCController::declareParameters(const rclcpp_lifecycle::LifecycleNode::Sha
 {
   auto declare_double = [&](const std::string& key, double default_val)
   {
-    nav2_util::declare_parameter_if_not_declared(node,
+    nav2::declare_parameter_if_not_declared(node,
                                                  plugin_name_ + "." + key,
                                                  rclcpp::ParameterValue(default_val));
     return node->get_parameter(plugin_name_ + "." + key).as_double();
@@ -149,7 +154,7 @@ void FTCController::declareParameters(const rclcpp_lifecycle::LifecycleNode::Sha
 
   auto declare_int = [&](const std::string& key, int default_val)
   {
-    nav2_util::declare_parameter_if_not_declared(node,
+    nav2::declare_parameter_if_not_declared(node,
                                                  plugin_name_ + "." + key,
                                                  rclcpp::ParameterValue(default_val));
     return static_cast<int>(node->get_parameter(plugin_name_ + "." + key).as_int());
@@ -157,7 +162,7 @@ void FTCController::declareParameters(const rclcpp_lifecycle::LifecycleNode::Sha
 
   auto declare_bool = [&](const std::string& key, bool default_val)
   {
-    nav2_util::declare_parameter_if_not_declared(node,
+    nav2::declare_parameter_if_not_declared(node,
                                                  plugin_name_ + "." + key,
                                                  rclcpp::ParameterValue(default_val));
     return node->get_parameter(plugin_name_ + "." + key).as_bool();
@@ -612,8 +617,8 @@ rcl_interfaces::msg::SetParametersResult FTCController::onParameterChange(
 }
 
 // ── setPlan ───────────────────────────────────────────────────────────────────
-
-void FTCController::setPlan(const nav_msgs::msg::Path& path)
+void FTCController::newPathReceived(const nav_msgs::msg::Path& path)
+//void FTCController::setPlan(const nav_msgs::msg::Path& path)
 {
   current_state_ = PlannerState::PRE_ROTATE;
   state_entered_time_ = clock_->now();
@@ -800,11 +805,16 @@ void FTCController::setSpeedLimit(const double& speed_limit, const bool& percent
 }
 
 // ── computeVelocityCommands ───────────────────────────────────────────────────
-
 geometry_msgs::msg::TwistStamped FTCController::computeVelocityCommands(
-    const geometry_msgs::msg::PoseStamped& /*pose*/,
+    const geometry_msgs::msg::PoseStamped& pose,
     const geometry_msgs::msg::Twist& velocity,
-    nav2_core::GoalChecker* goal_checker)
+    nav2_core::GoalChecker* goal_checker,
+    const nav_msgs::msg::Path& transformed_global_plan,
+    const geometry_msgs::msg::PoseStamped& global_goal) 
+/*geometry_msgs::msg::TwistStamped FTCController::computeVelocityCommands(
+    const geometry_msgs::msg::PoseStamped& ,
+    const geometry_msgs::msg::Twist& velocity,
+    nav2_core::GoalChecker* goal_checker)*/
 {
   geometry_msgs::msg::TwistStamped cmd_vel;
   cmd_vel.header.frame_id = "base_link";

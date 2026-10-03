@@ -18,6 +18,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # ---------------------------------------------------------------------------
 
 find_package(ament_cmake REQUIRED)
+find_package(ament_cmake_auto REQUIRED)
 find_package(ament_index_cpp REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_action REQUIRED)
@@ -62,23 +63,24 @@ target_include_directories(behavior_tree_node PUBLIC
   $<INSTALL_INTERFACE:include>
 )
 
-ament_target_dependencies(behavior_tree_node
-  ament_index_cpp
-  rclcpp
-  rclcpp_action
-  behaviortree_cpp
-  tf2
-  tf2_ros
-  tf2_geometry_msgs
-  nav2_msgs
-  sensor_msgs
-  nav_msgs
-  geometry_msgs
-  action_msgs
-  std_msgs
-  std_srvs
-  mowgli_interfaces
-  rcl_interfaces
+ament_auto_depend_on_packages(behavior_tree_node
+  PACKAGES
+    ament_index_cpp
+    rclcpp
+    rclcpp_action
+    behaviortree_cpp
+    tf2
+    tf2_ros
+    tf2_geometry_msgs
+    nav2_msgs
+    sensor_msgs
+    nav_msgs
+    geometry_msgs
+    action_msgs
+    std_msgs
+    std_srvs
+    mowgli_interfaces
+    rcl_interfaces
 )
 
 # ---------------------------------------------------------------------------
@@ -123,14 +125,15 @@ if(BUILD_TESTING)
     $<INSTALL_INTERFACE:include>
   )
 
-  ament_target_dependencies(test_recording_nodes
-    rclcpp
-    geometry_msgs
-    behaviortree_cpp
-    mowgli_interfaces
-    nav_msgs
-    tf2
-    tf2_ros
+  ament_auto_depend_on_packages(test_recording_nodes
+    PACKAGES
+      rclcpp
+      geometry_msgs
+      behaviortree_cpp
+      mowgli_interfaces
+      nav_msgs
+      tf2
+      tf2_ros
   )
 
   # ---- test_obstacle_recovery ----
@@ -147,18 +150,19 @@ if(BUILD_TESTING)
     $<INSTALL_INTERFACE:include>
   )
 
-  ament_target_dependencies(test_obstacle_recovery
-    rclcpp
-    behaviortree_cpp
-    mowgli_interfaces
-    nav2_msgs
-    nav_msgs
-    geometry_msgs
-    std_msgs
-    std_srvs
-    tf2
-    tf2_ros
-    tf2_geometry_msgs
+  ament_auto_depend_on_packages(test_obstacle_recovery
+    PACKAGES
+      rclcpp
+      behaviortree_cpp
+      mowgli_interfaces
+      nav2_msgs
+      nav_msgs
+      geometry_msgs
+      std_msgs
+      std_srvs
+      tf2
+      tf2_ros
+      tf2_geometry_msgs
   )
 
   # ---- test_docking_boundary_exempt ----
@@ -176,18 +180,19 @@ if(BUILD_TESTING)
     $<INSTALL_INTERFACE:include>
   )
 
-  ament_target_dependencies(test_docking_boundary_exempt
-    rclcpp
-    behaviortree_cpp
-    mowgli_interfaces
-    nav2_msgs
-    nav_msgs
-    geometry_msgs
-    std_msgs
-    std_srvs
-    tf2
-    tf2_ros
-    tf2_geometry_msgs
+  ament_auto_depend_on_packages(test_docking_boundary_exempt
+    PACKAGES
+      rclcpp
+      behaviortree_cpp
+      mowgli_interfaces
+      nav2_msgs
+      nav_msgs
+      geometry_msgs
+      std_msgs
+      std_srvs
+      tf2
+      tf2_ros
+      tf2_geometry_msgs
   )
 
   # ---- test_set_nav2_lifecycle ----
@@ -204,21 +209,22 @@ if(BUILD_TESTING)
     $<INSTALL_INTERFACE:include>
   )
 
-  ament_target_dependencies(test_set_nav2_lifecycle
-    rclcpp
-    rclcpp_action
-    behaviortree_cpp
-    mowgli_interfaces
-    nav2_msgs
-    nav_msgs
-    geometry_msgs
-    std_msgs
-    std_srvs
-    tf2
-    tf2_ros
-    tf2_geometry_msgs
-    rcl_interfaces
-    action_msgs
+  ament_auto_depend_on_packages(test_set_nav2_lifecycle
+    PACKAGES
+      rclcpp
+      rclcpp_action
+      behaviortree_cpp
+      mowgli_interfaces
+      nav2_msgs
+      nav_msgs
+      geometry_msgs
+      std_msgs
+      std_srvs
+      tf2
+      tf2_ros
+      tf2_geometry_msgs
+      rcl_interfaces
+      action_msgs
   )
 
   # ---- test_get_next_unmowed_area ----
@@ -243,21 +249,22 @@ if(BUILD_TESTING)
     $<INSTALL_INTERFACE:include>
   )
 
-  ament_target_dependencies(test_get_next_unmowed_area
-    rclcpp
-    rclcpp_action
-    behaviortree_cpp
-    mowgli_interfaces
-    nav2_msgs
-    nav_msgs
-    geometry_msgs
-    std_msgs
-    std_srvs
-    tf2
-    tf2_ros
-    tf2_geometry_msgs
-    rcl_interfaces
-    action_msgs
+  ament_auto_depend_on_packages(test_get_next_unmowed_area
+    PACKAGES
+      rclcpp
+      rclcpp_action
+      behaviortree_cpp
+      mowgli_interfaces
+      nav2_msgs
+      nav_msgs
+      geometry_msgs
+      std_msgs
+      std_srvs
+      tf2
+      tf2_ros
+      tf2_geometry_msgs
+      rcl_interfaces
+      action_msgs
   )
 
   # ---- test_start_occupied_retry ----
@@ -281,21 +288,22 @@ if(BUILD_TESTING)
     MOWGLI_MAIN_TREE_PATH="${CMAKE_CURRENT_SOURCE_DIR}/trees/main_tree.xml"
   )
 
-  ament_target_dependencies(test_start_occupied_retry
-    rclcpp
-    rclcpp_action
-    behaviortree_cpp
-    mowgli_interfaces
-    nav2_msgs
-    nav_msgs
-    geometry_msgs
-    std_msgs
-    std_srvs
-    tf2
-    tf2_ros
-    tf2_geometry_msgs
-    rcl_interfaces
-    action_msgs
+  ament_auto_depend_on_packages(test_start_occupied_retry
+    PACKAGES
+      rclcpp
+      rclcpp_action
+      behaviortree_cpp
+      mowgli_interfaces
+      nav2_msgs
+      nav_msgs
+      geometry_msgs
+      std_msgs
+      std_srvs
+      tf2
+      tf2_ros
+      tf2_geometry_msgs
+      rcl_interfaces
+      action_msgs
   )
 
   # Round-trip + staleness coverage for the disk-backed resume state (issue #334:
@@ -311,13 +319,14 @@ if(BUILD_TESTING)
     $<INSTALL_INTERFACE:include>
   )
 
-  ament_target_dependencies(test_coverage_persistence
-    rclcpp
-    behaviortree_cpp
-    mowgli_interfaces
-    nav_msgs
-    geometry_msgs
-    tf2_ros
+  ament_auto_depend_on_packages(test_coverage_persistence
+    PACKAGES
+      rclcpp
+      behaviortree_cpp
+      mowgli_interfaces
+      nav_msgs
+      geometry_msgs
+      tf2_ros
   )
 
   ament_add_gtest(test_gnss_status_authority
@@ -329,8 +338,9 @@ if(BUILD_TESTING)
     $<INSTALL_INTERFACE:include>
   )
 
-  ament_target_dependencies(test_gnss_status_authority
-    mowgli_interfaces
+  ament_auto_depend_on_packages(test_gnss_status_authority
+    PACKAGES
+      mowgli_interfaces
   )
 
   # Single-source regression guard (task #14): FollowStrip::kSegmentTransitGap
@@ -347,21 +357,22 @@ if(BUILD_TESTING)
     $<INSTALL_INTERFACE:include>
   )
 
-  ament_target_dependencies(test_coverage_transit_gap
-    rclcpp
-    rclcpp_action
-    behaviortree_cpp
-    mowgli_interfaces
-    nav2_msgs
-    nav_msgs
-    geometry_msgs
-    std_msgs
-    std_srvs
-    tf2
-    tf2_ros
-    tf2_geometry_msgs
-    rcl_interfaces
-    action_msgs
+  ament_auto_depend_on_packages(test_coverage_transit_gap
+    PACKAGES
+      rclcpp
+      rclcpp_action
+      behaviortree_cpp
+      mowgli_interfaces
+      nav2_msgs
+      nav_msgs
+      geometry_msgs
+      std_msgs
+      std_srvs
+      tf2
+      tf2_ros
+      tf2_geometry_msgs
+      rcl_interfaces
+      action_msgs
   )
 
   # ---- test_coverage_resume_location ----
@@ -380,21 +391,22 @@ if(BUILD_TESTING)
     $<INSTALL_INTERFACE:include>
   )
 
-  ament_target_dependencies(test_coverage_resume_location
-    rclcpp
-    rclcpp_action
-    behaviortree_cpp
-    mowgli_interfaces
-    nav2_msgs
-    nav_msgs
-    geometry_msgs
-    std_msgs
-    std_srvs
-    tf2
-    tf2_ros
-    tf2_geometry_msgs
-    rcl_interfaces
-    action_msgs
+  ament_auto_depend_on_packages(test_coverage_resume_location
+    PACKAGES
+      rclcpp
+      rclcpp_action
+      behaviortree_cpp
+      mowgli_interfaces
+      nav2_msgs
+      nav_msgs
+      geometry_msgs
+      std_msgs
+      std_srvs
+      tf2
+      tf2_ros
+      tf2_geometry_msgs
+      rcl_interfaces
+      action_msgs
   )
 
   # ---- test_swath_progress ----
@@ -413,21 +425,22 @@ if(BUILD_TESTING)
     $<INSTALL_INTERFACE:include>
   )
 
-  ament_target_dependencies(test_swath_progress
-    rclcpp
-    rclcpp_action
-    behaviortree_cpp
-    mowgli_interfaces
-    nav2_msgs
-    nav_msgs
-    geometry_msgs
-    std_msgs
-    std_srvs
-    tf2
-    tf2_ros
-    tf2_geometry_msgs
-    rcl_interfaces
-    action_msgs
+  ament_auto_depend_on_packages(test_swath_progress
+    PACKAGES
+      rclcpp
+      rclcpp_action
+      behaviortree_cpp
+      mowgli_interfaces
+      nav2_msgs
+      nav_msgs
+      geometry_msgs
+      std_msgs
+      std_srvs
+      tf2
+      tf2_ros
+      tf2_geometry_msgs
+      rcl_interfaces
+      action_msgs
   )
 
   # ---- test_detour_resume ----
@@ -444,9 +457,10 @@ if(BUILD_TESTING)
     $<INSTALL_INTERFACE:include>
   )
 
-  ament_target_dependencies(test_detour_resume
-    geometry_msgs
-    mowgli_interfaces
+  ament_auto_depend_on_packages(test_detour_resume
+    PACKAGES
+      geometry_msgs
+      mowgli_interfaces
   )
 
   # ---- test_start_blocked_escape ----
@@ -478,7 +492,10 @@ if(BUILD_TESTING)
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
   )
-  ament_target_dependencies(test_localization_health mowgli_interfaces)
+  ament_auto_depend_on_packages(test_localization_health
+    PACKAGES
+      mowgli_interfaces
+  )
 
   # ---- test_battery_critical_resume ----
   # Regression for "robot stuck after a critical-battery charge": the
@@ -497,18 +514,19 @@ if(BUILD_TESTING)
     $<INSTALL_INTERFACE:include>
   )
 
-  ament_target_dependencies(test_battery_critical_resume
-    rclcpp
-    behaviortree_cpp
-    mowgli_interfaces
-    nav2_msgs
-    nav_msgs
-    geometry_msgs
-    std_msgs
-    std_srvs
-    tf2
-    tf2_ros
-    tf2_geometry_msgs
+  ament_auto_depend_on_packages(test_battery_critical_resume
+    PACKAGES
+      rclcpp
+      behaviortree_cpp
+      mowgli_interfaces
+      nav2_msgs
+      nav_msgs
+      geometry_msgs
+      std_msgs
+      std_srvs
+      tf2
+      tf2_ros
+      tf2_geometry_msgs
   )
 
   # ---- test_guard_fallthrough ----
@@ -535,18 +553,19 @@ if(BUILD_TESTING)
     MOWGLI_MAIN_TREE_PATH="${CMAKE_CURRENT_SOURCE_DIR}/trees/main_tree.xml"
   )
 
-  ament_target_dependencies(test_guard_fallthrough
-    rclcpp
-    behaviortree_cpp
-    mowgli_interfaces
-    nav2_msgs
-    nav_msgs
-    geometry_msgs
-    std_msgs
-    std_srvs
-    tf2
-    tf2_ros
-    tf2_geometry_msgs
+  ament_auto_depend_on_packages(test_guard_fallthrough
+    PACKAGES
+      rclcpp
+      behaviortree_cpp
+      mowgli_interfaces
+      nav2_msgs
+      nav_msgs
+      geometry_msgs
+      std_msgs
+      std_srvs
+      tf2
+      tf2_ros
+      tf2_geometry_msgs
   )
 
   # ---- test_high_level_status_snapshot ----
@@ -565,18 +584,19 @@ if(BUILD_TESTING)
     $<INSTALL_INTERFACE:include>
   )
 
-  ament_target_dependencies(test_high_level_status_snapshot
-    rclcpp
-    behaviortree_cpp
-    mowgli_interfaces
-    nav2_msgs
-    nav_msgs
-    geometry_msgs
-    std_msgs
-    std_srvs
-    tf2
-    tf2_ros
-    tf2_geometry_msgs
+  ament_auto_depend_on_packages(test_high_level_status_snapshot
+    PACKAGES
+      rclcpp
+      behaviortree_cpp
+      mowgli_interfaces
+      nav2_msgs
+      nav_msgs
+      geometry_msgs
+      std_msgs
+      std_srvs
+      tf2
+      tf2_ros
+      tf2_geometry_msgs
   )
 
   # ---- test_battery_filter ----

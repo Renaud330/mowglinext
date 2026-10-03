@@ -53,7 +53,8 @@ namespace fusion_graph
 class FusionGraphNode : public rclcpp::Node
 {
 public:
-  explicit FusionGraphNode(const rclcpp::NodeOptions& opts = {});
+ // explicit FusionGraphNode(const rclcpp::NodeOptions& opts = {});
+  explicit FusionGraphNode(const rclcpp::NodeOptions& opts = rclcpp::NodeOptions{});
   ~FusionGraphNode() override;
 
 private:

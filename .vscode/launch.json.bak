@@ -1,0 +1,33 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch Full System (Simulation + ROS 2)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "/opt/ros/lyrical/bin/ros2",
+      "args": [
+        "launch",
+        "mowgli_bringup",
+        "full_system.launch.py",
+        "use_sim_time:=true"
+      ],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [
+        { "name": "PYTHONUNBUFFERED", "value": "1" },
+        { "name": "PORT", "value": "4006" },
+        { "name": "MOWGLI_PORT", "value": "4006" }
+      ],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    }
+  ]
+}

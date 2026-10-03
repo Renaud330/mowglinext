@@ -25,6 +25,7 @@ find_package(sensor_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(mowgli_interfaces REQUIRED)
+find_package(ament_cmake_auto REQUIRED)
 
 # ---------------------------------------------------------------------------
 # Static library: mowgli_hardware_core
@@ -48,11 +49,12 @@ target_include_directories(mowgli_hardware_core
 )
 
 # serial_port.cpp uses POSIX pthreads indirectly via the OS serial layer.
-target_link_libraries(mowgli_hardware_core pthread)
-
+#target_link_libraries(mowgli_hardware_core pthread)
+target_link_libraries(mowgli_hardware_core PRIVATE pthread)
 # clock_fit.cpp needs rclcpp::Time. Promote rclcpp to the static lib's
 # public deps so test executables also pick it up transitively.
-ament_target_dependencies(mowgli_hardware_core
+#ament_target_dependencies(mowgli_hardware_core
+ament_auto_depend_on_packages(mowgli_hardware_core SCOPE PUBLIC PACKAGES 
   rclcpp
 )
 
@@ -69,7 +71,7 @@ target_link_libraries(hardware_bridge_node
   mowgli_hardware_core
 )
 
-ament_target_dependencies(hardware_bridge_node
+ament_auto_depend_on_packages(hardware_bridge_node PACKAGES
   rclcpp
   std_msgs
   std_srvs
@@ -161,7 +163,8 @@ if(BUILD_TESTING)
     PRIVATE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   )
-  ament_target_dependencies(test_dig_detector mowgli_interfaces)
+  #ament_target_dependencies(test_dig_detector mowgli_interfaces)
+  ament_auto_depend_on_packages(test_dig_detector PACKAGES mowgli_interfaces)
 
   # ---- test_imu_liveness ----
   # Header-only pure logic (imu_liveness.hpp): no link against

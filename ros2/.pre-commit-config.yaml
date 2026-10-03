@@ -5,7 +5,7 @@
 
 repos:
   # ─── General file hygiene ─────────────────────────────────────────────────
-  - repo: https://github.com/pre-commit/pre-commit-hooks
+  - repo: https://github.com/Renaud330/pre-commit-hooks
     rev: v4.6.0
     hooks:
       - id: trailing-whitespace
@@ -19,7 +19,7 @@ repos:
       - id: check-case-conflict
 
   # ─── YAML ─────────────────────────────────────────────────────────────────
-  - repo: https://github.com/pre-commit/pre-commit-hooks
+  - repo: https://github.com/Renaud330pre-commit-hooks
     rev: v4.6.0
     hooks:
       - id: check-yaml
@@ -28,14 +28,14 @@ repos:
         exclude: ^(build|install|log)/
 
   # ─── XML (package.xml, launch files, URDF, xacro) ────────────────────────
-  - repo: https://github.com/pre-commit/pre-commit-hooks
+  - repo: https://github.com/Renaud330/pre-commit-hooks
     rev: v4.6.0
     hooks:
       - id: check-xml
         exclude: ^(build|install|log)/
 
   # ─── C++ formatting with clang-format ────────────────────────────────────
-  - repo: https://github.com/pre-commit/mirrors-clang-format
+  - repo: https://github.com/Renaud330/mirrors-clang-format
     rev: v18.1.8
     hooks:
       - id: clang-format

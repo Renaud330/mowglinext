@@ -21,6 +21,7 @@ fusion_graph_node:
     # tuned at 25 Hz and auto-scale off this value (graph_params.hpp
     # kTunedNodePeriodS = 0.04), so their rad/s trip points hold at any cadence.
     node_period_s: 0.02
+    graph_save_prefix  : "/home/oldtour/mowglinext/log/fusion_graph"
 
     # ── Odom re-base (map→odom lever-arm bound) ────────────────────────
     # SAFETY (SAFETY_REVIEW_2026-07-23 G-C1): the map→odom anchor is

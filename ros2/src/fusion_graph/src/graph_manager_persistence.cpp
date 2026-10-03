@@ -302,9 +302,9 @@ bool GraphManager::Load(const std::string& prefix)
   // when the configured datum is unset (0,0) so self-seeded bootstrap reloads.
   // site and would inject wrong absolute factors. Skipped when the configured datum
   // is unset (0,0) so self-seeded bootstrap reloads.
-  const bool have_cfg_datum =
+  /*const*/ bool have_cfg_datum =
       std::abs(params_.datum_lat) > 1.0e-9 || std::abs(params_.datum_lon) > 1.0e-9;
-  const bool have_persisted_datum =
+  /*const*/ bool have_persisted_datum =
       std::abs(loaded_datum_lat) > 1.0e-9 || std::abs(loaded_datum_lon) > 1.0e-9;
   if (have_cfg_datum && have_persisted_datum &&
       (std::abs(loaded_datum_lat - params_.datum_lat) > 1.0e-6 ||
@@ -317,13 +317,12 @@ bool GraphManager::Load(const std::string& prefix)
             params_.datum_lon,
             loaded_datum_lat,
             loaded_datum_lon);
+
     return false;
   }
 // 1. Détection des Datums disponibles
-  const bool have_cfg_datum =
-      std::abs(params_.datum_lat) > 1.0e-9 || std::abs(params_.datum_lon) > 1.0e-9;
-  const bool have_persisted_datum =
-      std::abs(loaded_datum_lat) > 1.0e-9 || std::abs(loaded_datum_lon) > 1.0e-9;
+ ///* const bool*/ have_cfg_datum =  std::abs(params_.datum_lat) > 1.0e-9 || std::abs(params_.datum_lon) > 1.0e-9;
+ /* const bool*/ have_persisted_datum =  std::abs(loaded_datum_lat) > 1.0e-9 || std::abs(loaded_datum_lon) > 1.0e-9;
 
   // CAS A : Le fichier .meta n'a PAS de Datum, mais le YAML en a un
   if (!have_persisted_datum && have_cfg_datum)

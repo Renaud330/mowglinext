@@ -18,6 +18,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # ---------------------------------------------------------------------------
 
 find_package(ament_cmake        REQUIRED)
+find_package(ament_cmake_auto REQUIRED) 
 find_package(rclcpp             REQUIRED)
 find_package(rclcpp_action      REQUIRED)
 find_package(nav_msgs           REQUIRED)
@@ -50,7 +51,7 @@ add_executable(wheel_odometry_node
 
 target_include_directories(wheel_odometry_node PUBLIC ${INCLUDE_DIR})
 
-ament_target_dependencies(wheel_odometry_node
+ament_auto_depend_on_packages(wheel_odometry_node SCOPE PRIVATE PACKAGES
   rclcpp
   nav_msgs
   geometry_msgs
@@ -70,7 +71,7 @@ add_executable(navsat_to_absolute_pose_node
 
 target_include_directories(navsat_to_absolute_pose_node PUBLIC ${INCLUDE_DIR})
 
-ament_target_dependencies(navsat_to_absolute_pose_node
+ament_auto_depend_on_packages(navsat_to_absolute_pose_node SCOPE PRIVATE PACKAGES
   rclcpp
   sensor_msgs
   geometry_msgs
@@ -90,7 +91,7 @@ add_executable(localization_monitor_node
 
 target_include_directories(localization_monitor_node PUBLIC ${INCLUDE_DIR})
 
-ament_target_dependencies(localization_monitor_node
+ament_auto_depend_on_packages(localization_monitor_node SCOPE PRIVATE PACKAGES
   rclcpp
   nav_msgs
   geometry_msgs
@@ -108,14 +109,14 @@ add_executable(cog_to_imu
 
 target_include_directories(cog_to_imu PUBLIC ${INCLUDE_DIR})
 
-ament_target_dependencies(cog_to_imu
+ament_auto_depend_on_packages(cog_to_imu SCOPE PRIVATE PACKAGES
   rclcpp
   nav_msgs
   geometry_msgs
   sensor_msgs
 )
 
-target_link_libraries(cog_to_imu yaml-cpp)
+target_link_libraries(cog_to_imu  PRIVATE yaml-cpp)
 
 # ---------------------------------------------------------------------------
 # Executable: mag_yaw_publisher (ported from mag_yaw_publisher.py)
@@ -125,7 +126,7 @@ add_executable(mag_yaw_publisher
   src/mag_yaw_publisher_node.cpp
 )
 
-ament_target_dependencies(mag_yaw_publisher
+ament_auto_depend_on_packages(mag_yaw_publisher SCOPE PRIVATE PACKAGES
   rclcpp
   geometry_msgs
   sensor_msgs
@@ -133,7 +134,7 @@ ament_target_dependencies(mag_yaw_publisher
   tf2_ros
 )
 
-target_link_libraries(mag_yaw_publisher yaml-cpp)
+target_link_libraries(mag_yaw_publisher  PRIVATE yaml-cpp)
 
 # dock_yaw_to_set_pose was inlined into fusion_graph_node (2026-05-18)
 # — see FusionGraphNode::SeedFromDockPose in fusion_graph/src/.
@@ -148,7 +149,7 @@ add_executable(calibrate_imu_yaw_node
 
 target_include_directories(calibrate_imu_yaw_node PUBLIC ${INCLUDE_DIR})
 
-ament_target_dependencies(calibrate_imu_yaw_node
+ament_auto_depend_on_packages(calibrate_imu_yaw_node SCOPE PRIVATE PACKAGES
   rclcpp
   rclcpp_action
   geometry_msgs
@@ -158,7 +159,7 @@ ament_target_dependencies(calibrate_imu_yaw_node
   mowgli_interfaces
 )
 
-target_link_libraries(calibrate_imu_yaw_node yaml-cpp)
+target_link_libraries(calibrate_imu_yaw_node  PRIVATE yaml-cpp)
 
 # ---------------------------------------------------------------------------
 # Executable: costmap_scan_filter_node (conditional radial blank for the
@@ -170,10 +171,12 @@ add_executable(costmap_scan_filter_node
   src/costmap_scan_filter_node.cpp
 )
 
-ament_target_dependencies(costmap_scan_filter_node
-  rclcpp
-  sensor_msgs
-  mowgli_interfaces
+ament_auto_depend_on_packages(costmap_scan_filter_node
+  SCOPE PRIVATE
+  PACKAGES
+    rclcpp
+    sensor_msgs
+    mowgli_interfaces
 )
 
 # ---------------------------------------------------------------------------
@@ -187,10 +190,12 @@ add_executable(scan_deskew_node
   src/scan_deskew_node.cpp
 )
 
-ament_target_dependencies(scan_deskew_node
-  rclcpp
-  sensor_msgs
-  nav_msgs
+ament_auto_depend_on_packages(scan_deskew_node
+  SCOPE PRIVATE
+  PACKAGES
+    rclcpp
+    sensor_msgs
+    nav_msgs
 )
 
 # ---------------------------------------------------------------------------
@@ -207,7 +212,7 @@ add_executable(gps_dock_detection_node
 
 target_include_directories(gps_dock_detection_node PUBLIC ${INCLUDE_DIR})
 
-ament_target_dependencies(gps_dock_detection_node
+ament_auto_depend_on_packages(gps_dock_detection_node SCOPE PRIVATE PACKAGES
   rclcpp
   geometry_msgs
   sensor_msgs
@@ -291,11 +296,12 @@ if(BUILD_TESTING)
   # Re-implements the static helper so we don't drag rclcpp/main symbols
   # into the test binary; the helper is small enough to keep in sync by
   # eye and a regression there will trigger a test failure here.
-  ament_add_gtest(test_costmap_scan_filter
+    ament_add_gtest(test_costmap_scan_filter
     test/test_costmap_scan_filter.cpp
   )
-  ament_target_dependencies(test_costmap_scan_filter
-    sensor_msgs
+  ament_auto_depend_on_packages(test_costmap_scan_filter
+      PACKAGES
+      sensor_msgs
   )
 
   ament_add_gtest(test_navsat_projection_utils
@@ -304,11 +310,11 @@ if(BUILD_TESTING)
   target_include_directories(test_navsat_projection_utils PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
   )
-  ament_target_dependencies(test_navsat_projection_utils
-    mowgli_interfaces
-    sensor_msgs
+  ament_auto_depend_on_packages(test_navsat_projection_utils
+       PACKAGES
+      mowgli_interfaces
+      sensor_msgs
   )
-
   # ---- test_dock_cog_gate ----
   # Pure C++ test of the one-click dock-calibration COG-coherence gate
   # (dock_cog_gate.hpp): Resolution A — dock_yaw = circular_mean of the
@@ -342,8 +348,10 @@ if(BUILD_TESTING)
   ament_add_gtest(test_robot_yaml_scalar
     test/test_robot_yaml_scalar.cpp
   )
-  ament_target_dependencies(test_robot_yaml_scalar
-    mowgli_interfaces
+
+  ament_auto_depend_on_packages(test_robot_yaml_scalar
+      PACKAGES
+      mowgli_interfaces
   )
 
 endif()

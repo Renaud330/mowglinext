@@ -18,6 +18,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # ---------------------------------------------------------------------------
 
 find_package(ament_cmake REQUIRED)
+find_package(ament_cmake_auto REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(mowgli_interfaces REQUIRED)
 
@@ -40,9 +41,11 @@ target_include_directories(mowgli_leds_core
     $<INSTALL_INTERFACE:include>
 )
 
-ament_target_dependencies(mowgli_leds_core
-  rclcpp
-  mowgli_interfaces
+ament_auto_depend_on_packages(mowgli_leds_core
+  SCOPE PUBLIC
+  PACKAGES
+    rclcpp
+    mowgli_interfaces
 )
 
 # ---------------------------------------------------------------------------
@@ -53,13 +56,14 @@ add_executable(led_ring_node
   src/led_ring_main.cpp
 )
 
-target_link_libraries(led_ring_node
-  mowgli_leds_core
-)
 
-ament_target_dependencies(led_ring_node
-  rclcpp
-  mowgli_interfaces
+target_link_libraries(led_ring_node PRIVATE mowgli_leds_core)
+
+ament_auto_depend_on_packages(led_ring_node
+  SCOPE PRIVATE
+  PACKAGES
+    rclcpp
+    mowgli_interfaces
 )
 
 # ---------------------------------------------------------------------------

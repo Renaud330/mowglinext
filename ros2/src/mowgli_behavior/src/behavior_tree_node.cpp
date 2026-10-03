@@ -23,7 +23,8 @@
 #include <string>
 #include <vector>
 
-#include "ament_index_cpp/get_package_share_directory.hpp"
+//#include "ament_index_cpp/get_package_share_directory.hpp"
+#include "ament_index_cpp/get_package_share_path.hpp"
 #include "behaviortree_cpp/behavior_tree.h"
 #include "behaviortree_cpp/loggers/bt_cout_logger.h"
 #include "geometry_msgs/msg/twist_stamped.hpp"
@@ -860,9 +861,11 @@ private:
     {
       try
       {
-        const std::string pkg_share =
-            ament_index_cpp::get_package_share_directory("mowgli_behavior");
-        tree_file = pkg_share + "/trees/main_tree.xml";
+ //       const std::string pkg_share =
+//            ament_index_cpp::get_package_share_directory("mowgli_behavior");
+       // tree_file = pkg_share + "/trees/main_tree.xml";
+        tree_file = (ament_index_cpp::get_package_share_path("mowgli_behavior") /
+             "trees" / "main_tree.xml").string();
       }
       catch (const std::exception& ex)
       {

@@ -18,6 +18,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # ---------------------------------------------------------------------------
 
 find_package(ament_cmake REQUIRED)
+find_package(ament_cmake_auto REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(diagnostic_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
@@ -70,7 +71,9 @@ target_include_directories(mowgli_monitoring_core
     $<INSTALL_INTERFACE:include>
 )
 
-ament_target_dependencies(mowgli_monitoring_core
+ament_auto_depend_on_packages(mowgli_monitoring_core
+  SCOPE PUBLIC
+  PACKAGES
   rclcpp
   diagnostic_msgs
   sensor_msgs
@@ -83,7 +86,7 @@ if(MOSQUITTO_FOUND)
   target_compile_definitions(mowgli_monitoring_core PUBLIC MOWGLI_HAS_MOSQUITTO)
   target_include_directories(mowgli_monitoring_core
     PUBLIC ${MOSQUITTO_INCLUDE_DIRS})
-  target_link_libraries(mowgli_monitoring_core ${MOSQUITTO_LIBRARIES})
+  target_link_libraries(mowgli_monitoring_core  PUBLIC ${MOSQUITTO_LIBRARIES})
 endif()
 
 # ---------------------------------------------------------------------------
@@ -94,11 +97,13 @@ add_executable(diagnostics_node
   src/diagnostics_main.cpp
 )
 
-target_link_libraries(diagnostics_node
+target_link_libraries(diagnostics_node PRIVATE 
   mowgli_monitoring_core
 )
 
-ament_target_dependencies(diagnostics_node
+ament_auto_depend_on_packages(diagnostics_node
+ SCOPE PRIVATE
+  PACKAGES
   rclcpp
   diagnostic_msgs
   sensor_msgs
@@ -115,11 +120,13 @@ add_executable(mqtt_bridge_node
   src/mqtt_bridge_main.cpp
 )
 
-target_link_libraries(mqtt_bridge_node
+target_link_libraries(mqtt_bridge_node PRIVATE 
   mowgli_monitoring_core
 )
 
-ament_target_dependencies(mqtt_bridge_node
+ament_auto_depend_on_packages(mqtt_bridge_node
+  SCOPE PUBLIC
+  PACKAGES
   rclcpp
   diagnostic_msgs
   sensor_msgs
@@ -172,7 +179,8 @@ if(BUILD_TESTING)
     mowgli_monitoring_core
   )
 
-  ament_target_dependencies(test_diagnostics
+  ament_auto_depend_on_packages(test_diagnostics
+    PACKAGES
     rclcpp
     diagnostic_msgs
     sensor_msgs

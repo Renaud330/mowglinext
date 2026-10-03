@@ -18,6 +18,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # ---------------------------------------------------------------------------
 
 find_package(ament_cmake REQUIRED)
+find_package(ament_cmake_auto REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
@@ -54,7 +55,8 @@ target_include_directories(mowgli_map_lib PUBLIC
   ${Boost_INCLUDE_DIRS}
 )
 
-ament_target_dependencies(mowgli_map_lib
+ament_auto_depend_on_packages(mowgli_map_lib
+  SCOPE PUBLIC PACKAGES
   rclcpp
   std_msgs
   std_srvs
@@ -83,7 +85,8 @@ target_include_directories(mowgli_obstacle_tracker_lib PUBLIC
   $<INSTALL_INTERFACE:include>
 )
 
-ament_target_dependencies(mowgli_obstacle_tracker_lib
+ament_auto_depend_on_packages(mowgli_obstacle_tracker_lib 
+  SCOPE PUBLIC PACKAGES
   rclcpp
   std_srvs
   nav_msgs
@@ -104,11 +107,13 @@ add_executable(map_server_node
   src/main.cpp
 )
 
-target_link_libraries(map_server_node
+target_link_libraries(map_server_node PRIVATE
   mowgli_map_lib
 )
 
-ament_target_dependencies(map_server_node
+ament_auto_depend_on_packages(map_server_node
+SCOPE PRIVATE
+PACKAGES
   rclcpp
 )
 
@@ -116,15 +121,17 @@ ament_target_dependencies(map_server_node
 # Executable: obstacle_tracker_node
 # ---------------------------------------------------------------------------
 
-add_executable(obstacle_tracker_node
+add_executable(obstacle_tracker_node 
   src/obstacle_tracker_main.cpp
 )
 
-target_link_libraries(obstacle_tracker_node
+target_link_libraries(obstacle_tracker_node PRIVATE
   mowgli_obstacle_tracker_lib
 )
 
-ament_target_dependencies(obstacle_tracker_node
+ament_auto_depend_on_packages(obstacle_tracker_node
+  SCOPE PRIVATE
+  PACKAGES
   rclcpp
 )
 
@@ -177,7 +184,8 @@ if(BUILD_TESTING)
     mowgli_map_lib
   )
 
-  ament_target_dependencies(test_map_server
+  ament_auto_depend_on_packages(test_map_server
+    PACKAGES
     rclcpp
     grid_map_core
     grid_map_ros
@@ -197,7 +205,8 @@ if(BUILD_TESTING)
 
   target_include_directories(test_mow_progress PRIVATE include)
 
-  ament_target_dependencies(test_mow_progress
+  ament_auto_depend_on_packages(test_mow_progress
+    PACKAGES
     rclcpp
     grid_map_core
     grid_map_ros
@@ -215,7 +224,8 @@ if(BUILD_TESTING)
     mowgli_obstacle_tracker_lib
   )
 
-  ament_target_dependencies(test_obstacle_tracker
+  ament_auto_depend_on_packages(test_obstacle_tracker
+    PACKAGES
     rclcpp
     std_srvs
     nav_msgs

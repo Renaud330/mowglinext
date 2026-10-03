@@ -14,6 +14,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # ---------------------------------------------------------------------------
 
 find_package(ament_cmake        REQUIRED)
+find_package(ament_cmake_auto REQUIRED)
 find_package(rclcpp             REQUIRED)
 find_package(nav_msgs           REQUIRED)
 find_package(geometry_msgs      REQUIRED)
@@ -60,20 +61,22 @@ target_link_libraries(fusion_graph_core PUBLIC
   Eigen3::Eigen
 )
 
-ament_target_dependencies(fusion_graph_core PUBLIC
-  rclcpp
-  nav_msgs
-  geometry_msgs
-  sensor_msgs
-  std_msgs
-  std_srvs
-  diagnostic_msgs
-  visualization_msgs
-  tf2
-  tf2_ros
-  tf2_geometry_msgs
-  tf2_eigen
-  mowgli_interfaces
+ament_auto_depend_on_packages(fusion_graph_core
+  SCOPE PUBLIC
+  PACKAGES
+    rclcpp
+    nav_msgs
+    geometry_msgs
+    sensor_msgs
+    std_msgs
+    std_srvs
+    diagnostic_msgs
+    visualization_msgs
+    tf2
+    tf2_ros
+    tf2_geometry_msgs
+    tf2_eigen
+    mowgli_interfaces
 )
 
 # ---------------------------------------------------------------------------
